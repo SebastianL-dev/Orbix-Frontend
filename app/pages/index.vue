@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import Sidebar from "~/components/sidebar.vue";
+import Sidebar from "~/components/ui/sidebar.vue";
+import SpaceParticles from "~/components/particles/space-particles.vue";
 </script>
 
 <template>
-  <main class="w-full h-screen">
+  <main class="relative flex w-full h-screen">
+    <SpaceParticles />
+
     <Sidebar />
 
-    <div></div>
+    <div class="flex-1"></div>
   </main>
 </template>
