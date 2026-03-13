@@ -18,7 +18,7 @@ function toggle() {
   <motion.aside
     :animate="{ width: isOpen ? '18rem' : '4.5rem' }"
     :transition="{ duration: 0.3, ease: 'easeInOut' }"
-    class="bg-violet-500/10 px-4 py-6 h-full border-r border-violet-200/10 flex flex-col gap-4 overflow-hidden backdrop-blur-[3px]"
+    class="bg-violet-500/10 px-4 py-6 h-full border-r border-violet-200/10 flex flex-col gap-4 overflow-hidden backdrop-blur-xs w-72"
   >
     <div class="flex items-center text-2xl gap-3">
       <div class="flex bg-violet-500/15 p-2 rounded-xl shrink-0">

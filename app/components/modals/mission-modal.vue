@@ -41,7 +41,7 @@ defineEmits<{ close: [] }>();
 
             <IconButton @click="$emit('close')">
               <Icon
-                class="text-violet-300/70 text-md group-hover:text-violet-100 transition-colors ease-in-out duration-200"
+                class="text-violet-300/70 text-md group-hover:text-violet-100 transition-colors ease-in-out duration-200 p-2"
                 name="lucide:x"
               />
             </IconButton>

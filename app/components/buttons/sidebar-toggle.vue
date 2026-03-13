@@ -15,9 +15,8 @@ defineEmits<{
   <MainButton
     @click="$emit('toggle')"
     variant="secondary"
-    :class="
-      isOpen ? 'w-full hover:scale-105!' : 'w-fit justify-center px-2.25!'
-    "
+    :class="isOpen ? 'w-full hover:scale-105!' : 'w-fit justify-center'"
+    class="px-2.25!"
   >
     <Motion
       :animate="{ rotate: isOpen ? 0 : 180 }"
