@@ -1,3 +1,5 @@
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -8,12 +10,13 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: "en",
       },
+      link: [{ rel: "icon", type: "image/x-icon", href: "/icon.png" }],
     },
   },
   css: ["~/assets/styles/globals.css"],
-  modules: ["@nuxtjs/tailwindcss", "@nuxt/icon"],
-  tailwindcss: {
-    exposeConfig: true,
-    viewer: true,
+  modules: ["@nuxt/icon"],
+
+  vite: {
+    plugins: [...(tailwindcss() as any)],
   },
 });
