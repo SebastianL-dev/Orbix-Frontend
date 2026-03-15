@@ -23,21 +23,43 @@ body {
   font-family: "SpaceGrotesk";
 }
 
-textarea::-webkit-scrollbar {
-  background-color: transparent;
+.scrollbar::-webkit-scrollbar,
+.scrollbar-thin::-webkit-scrollbar {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar {
   width: 4px;
 }
 
-textarea::-webkit-scrollbar-thumb {
-  background-color: #8b5cf6;
+.scrollbar-thin::-webkit-scrollbar {
+  width: 2px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb,
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #8b5cf6;
   border-radius: 9999px;
 }
 
 .transition-mix {
   transition:
-    scale var(--ease-bounce) 400ms,
-    transform var(--ease-bounce) 400ms,
-    rotate var(--ease-bounce) 400ms,
-    background ease-in-out 200ms,
-    color ease-in-out 200ms;
+    scale cubic-bezier(0.34, 1.56, 0.64, 1) 400ms,
+    transform cubic-bezier(0.34, 1.56, 0.64, 1) 400ms,
+    rotate cubic-bezier(0.34, 1.56, 0.64, 1) 400ms,
+    background linear 200ms,
+    border linear 200ms,
+    shadow linear 200ms,
+    color linear 200ms;
+}
+
+.mission-list::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 20%, #120b22 100%);
 }

@@ -74,7 +74,7 @@ defineEmits<{ close: [] }>();
                   id="mission_description"
                   placeholder="Describe your mission..."
                   rows="4"
-                  class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors resize-none"
+                  class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors resize-none scrollbar"
                 />
               </div>
             </fieldset>

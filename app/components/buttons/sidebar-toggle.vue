@@ -15,7 +15,7 @@ defineEmits<{
   <MainButton
     @click="$emit('toggle')"
     variant="secondary"
-    :class="isOpen ? 'w-full hover:scale-105!' : 'w-fit justify-center'"
+    :class="isOpen ? 'w-full hover:scale-105!' : 'w-full justify-start'"
     class="px-2.25!"
   >
     <Motion

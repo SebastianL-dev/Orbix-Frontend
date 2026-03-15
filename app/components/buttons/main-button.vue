@@ -14,14 +14,14 @@ const { variant } = props;
 
 const style =
   variant === "primary"
-    ? "bg-violet-500/25 text-violet-200 hover:bg-violet-500/35"
-    : "text-violet-200/70 hover:bg-violet-500/10";
+    ? "bg-violet-500/60 text-violet-100 hover:bg-violet-500 hover:text-white"
+    : "text-violet-200/70 hover:bg-violet-500/20 hover:text-violet-50";
 </script>
 
 <template>
   <button
     @click="$emit('click')"
-    class="px-4 py-3 rounded-xl hover:scale-110 text-sm cursor-pointer transition-mix flex items-center gap-3"
+    class="px-4 py-3 rounded-xl hover:scale-110 text-sm cursor-pointer transition-mix font-semibold flex items-center gap-3"
     :class="style"
   >
     <slot />
