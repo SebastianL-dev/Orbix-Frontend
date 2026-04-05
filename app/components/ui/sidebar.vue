@@ -14,9 +14,6 @@ const { data: missions } = await useFetch<Mission[]>(
   `${config.public.apiUrl}/missions`,
 );
 
-console.log("1:", config.public.apiUrl);
-console.log("2:", config.public.api_url);
-
 const isOpen = ref(true);
 const showModal = ref(false);
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type Task from "~/interfaces/task.interface";
+import { AnimatePresence, motion } from "motion-v";
 
 const props = defineProps<{
   task: Task;
@@ -20,9 +21,9 @@ function toggle() {
 const statusColor = computed(() => {
   switch (props.task.status.toLowerCase()) {
     case "completed":
-      return "bg-green-500/15 text-green-400";
+      return "bg-green-600/25 text-green-500";
     case "in_progress":
-      return "bg-amber-300/15 text-amber-300";
+      return "bg-amber-300/25 text-amber-300";
     case "pending":
       return "bg-zinc-300/15 text-zinc-300";
     default:
@@ -33,10 +34,19 @@ const statusColor = computed(() => {
 const statusLabel = computed(() => {
   return props.task.status.replace(/_/g, " ");
 });
+
+const childrenLabel = computed(() => {
+  const count = props.task.children.length;
+  const hasGrandchildren = props.task.children.some(
+    (child) => child.children.length > 0
+  );
+  const word = hasGrandchildren ? "subphase" : "task";
+  return `${count} ${word}${count > 1 ? "s" : ""}`;
+});
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <motion.div layout class="flex flex-col">
     <div
       class="group flex items-center gap-3 rounded-xl px-4 py-3 border border-transparent transition-all duration-200 hover:bg-violet-500/10 hover:border-violet-500/20"
       :class="{ 'cursor-pointer': hasChildren }"
@@ -80,25 +90,28 @@ const statusLabel = computed(() => {
           </span>
           <span v-if="hasChildren" class="flex items-center gap-1">
             <Icon name="lucide:git-branch" class="text-[11px]" />
-            {{ task.children.length }} subtask{{
-              task.children.length > 1 ? "s" : ""
-            }}
+            {{ childrenLabel }}
           </span>
         </div>
       </div>
     </div>
 
-    <div
-      v-if="hasChildren"
-      v-show="isOpen"
-      class="ml-7 pl-4 border-l border-violet-400/30"
-    >
-      <TreeNode
-        v-for="child in task.children"
-        :key="child.id"
-        :task="child"
-        :depth="depth + 1"
-      />
-    </div>
-  </div>
+    <AnimatePresence>
+      <motion.div
+        v-if="hasChildren && isOpen"
+        :initial="{ opacity: 0, height: 0 }"
+        :animate="{ opacity: 1, height: 'auto' }"
+        :exit="{ opacity: 0, height: 0 }"
+        :transition="{ duration: 0.25, ease: 'easeInOut' }"
+        class="ml-7 pl-4 border-l border-violet-400/30 overflow-hidden"
+      >
+        <TreeNode
+          v-for="child in task.children"
+          :key="child.id"
+          :task="child"
+          :depth="depth + 1"
+        />
+      </motion.div>
+    </AnimatePresence>
+  </motion.div>
 </template>

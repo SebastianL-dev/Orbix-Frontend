@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import type Mission from "~/interfaces/mission.interface";
+import type Tree from "~/interfaces/tree.interface";
 
 const props = defineProps<{
   mission: Mission;
 }>();
 
 const route = useRoute();
+
+const config = useRuntimeConfig();
+
+const { data: tree } = await useFetch<Tree>(
+  `${config.public.apiUrl}/missions/${props.mission.id}/tree`,
+);
+
+const phases = tree.value?.tree.length || 0;
 
 const style = computed(() => {
   return route.path.startsWith(`/missions/${props.mission.id}`)
@@ -24,13 +33,13 @@ const style = computed(() => {
       mission.name
     }}</span>
     <p
-      class="text-xs text-violet-200/80 text-ellipsis whitespace-nowrap overflow-hidden"
+      class="text-xs text-violet-200/60 text-ellipsis whitespace-nowrap overflow-hidden"
     >
       {{ mission.description }}
     </p>
     <span
-      class="mt-2 text-violet-100/50 text-xs text-ellipsis whitespace-nowrap overflow-hidden"
-      >3 phases</span
+      class="mt-2 text-violet-300/50 text-xs text-ellipsis whitespace-nowrap overflow-hidden"
+      >{{ phases }} phases</span
     >
   </NuxtLink>
 </template>

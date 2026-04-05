@@ -1,5 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex-1"></div>
+  <section>
+    <h1></h1>
+    <p></p>
+  </section>
 </template>

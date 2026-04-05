@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@vue-flow/core/dist/style.css";
+@import "@vue-flow/core/dist/theme-default.css";
 
 @theme inline {
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -62,4 +64,39 @@ body {
   height: 200px;
   pointer-events: none;
   background: linear-gradient(to bottom, transparent 20%, #120b22 100%);
+}
+
+.tree-flow {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.tree-flow .vue-flow__edge-path {
+  stroke: var(--color-violet-500);
+  stroke-width: 2;
+}
+
+.tree-flow .vue-flow__edge.animated .vue-flow__edge-path {
+  stroke: var(--color-violet-500);
+}
+
+.tree-flow .vue-flow__background {
+  background: transparent;
+}
+
+.tree-flow .vue-flow__controls {
+  background: rgba(18, 11, 34, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+}
+
+.tree-flow .vue-flow__controls-button {
+  background: transparent;
+  color: #c4b5fd;
+  border: none;
+}
+
+.tree-flow .vue-flow__controls-button:hover {
+  background: rgba(139, 92, 246, 0.2);
 }
