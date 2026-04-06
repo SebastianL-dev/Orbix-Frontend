@@ -2,10 +2,57 @@
 import { AnimatePresence, motion } from "motion-v";
 import IconButton from "~/components/buttons/icon-button.vue";
 import MainButton from "~/components/buttons/main-button.vue";
+import type Mission from "~/interfaces/mission.interface";
 
-defineProps<{ show: boolean }>();
+const props = defineProps<{ show: boolean; mission?: Mission }>();
+const emit = defineEmits<{ close: []; saved: [] }>();
 
-defineEmits<{ close: [] }>();
+const config = useRuntimeConfig();
+const toast = useToast();
+
+const name = ref("");
+const description = ref("");
+const loading = ref(false);
+
+const isEdit = computed(() => !!props.mission);
+
+watch(
+  () => props.show,
+  (val) => {
+    if (val && props.mission) {
+      name.value = props.mission.name;
+      description.value = props.mission.description;
+    } else if (val) {
+      name.value = "";
+      description.value = "";
+    }
+  },
+);
+
+async function submit() {
+  if (!name.value.trim()) return;
+  loading.value = true;
+
+  try {
+    if (isEdit.value && props.mission) {
+      await $fetch(`${config.public.apiUrl}/missions/${props.mission.id}`, {
+        method: "PUT",
+        body: { name: name.value, description: description.value },
+      });
+    } else {
+      await $fetch(`${config.public.apiUrl}/missions`, {
+        method: "POST",
+        body: { name: name.value, description: description.value },
+      });
+    }
+    emit("saved");
+    emit("close");
+  } catch (err: any) {
+    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to save mission");
+  } finally {
+    loading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -33,10 +80,16 @@ defineEmits<{ close: [] }>();
         >
           <div class="flex items-center justify-between">
             <div class="flex flex-col gap-0.5">
-              <h2 class="text-2xl font-bold text-violet-100">New Mission</h2>
-              <span class="text-sm font-normal text-violet-200/60"
-                >Create a new mission in Orbix space app.</span
-              >
+              <h2 class="text-2xl font-bold text-violet-100">
+                {{ isEdit ? "Edit Mission" : "New Mission" }}
+              </h2>
+              <span class="text-sm font-normal text-violet-200/60">
+                {{
+                  isEdit
+                    ? "Update your mission details."
+                    : "Create a new mission in Orbix space app."
+                }}
+              </span>
             </div>
 
             <IconButton @click="$emit('close')">
@@ -47,7 +100,7 @@ defineEmits<{ close: [] }>();
             </IconButton>
           </div>
 
-          <form class="flex flex-col gap-8" type="submit" method="POST">
+          <form class="flex flex-col gap-8" @submit.prevent="submit">
             <fieldset class="flex flex-col gap-4">
               <div class="flex flex-col gap-1.5">
                 <label
@@ -57,6 +110,7 @@ defineEmits<{ close: [] }>();
                 >
                 <input
                   id="mission_name"
+                  v-model="name"
                   type="text"
                   placeholder="Artemis III..."
                   required
@@ -72,6 +126,7 @@ defineEmits<{ close: [] }>();
                 >
                 <textarea
                   id="mission_description"
+                  v-model="description"
                   placeholder="Describe your mission..."
                   rows="4"
                   class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors resize-none scrollbar"
@@ -87,7 +142,9 @@ defineEmits<{ close: [] }>();
                 >Cancel</MainButton
               >
 
-              <MainButton>Create Mission</MainButton>
+              <MainButton type="submit" :disabled="loading">
+                {{ isEdit ? "Save Changes" : "Create Mission" }}
+              </MainButton>
             </div>
           </form>
         </motion.article>

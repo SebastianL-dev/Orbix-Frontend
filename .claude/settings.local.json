@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/SEBASTIAN/University/UPTC/V Semestre/Progra III/orbix-backend-js/prisma/**)"
+    ]
+  }
+}

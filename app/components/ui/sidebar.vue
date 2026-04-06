@@ -5,18 +5,59 @@ import Division from "~/components/ui/division.vue";
 import SidebarToggle from "../buttons/sidebar-toggle.vue";
 import IconButton from "~/components/buttons/icon-button.vue";
 import MissionModal from "~/components/modals/mission-modal.vue";
+import MissionLinkSkeleton from "~/components/skeletons/mission-link-skeleton.vue";
 import type Mission from "~/interfaces/mission.interface";
 import MissionLink from "../links/mission-link.vue";
 
 const config = useRuntimeConfig();
+const toast = useToast();
 
 const missions = ref<Mission[]>([]);
+const loading = ref(true);
 const isOpen = ref(true);
 const showModal = ref(false);
+const editingMission = ref<Mission | undefined>();
 
-onMounted(async () => {
-  missions.value = await $fetch<Mission[]>(`${config.public.apiUrl}/missions`);
-});
+async function fetchMissions() {
+  loading.value = true;
+  try {
+    missions.value = await $fetch<Mission[]>(`${config.public.apiUrl}/missions`);
+  } catch (err: any) {
+    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to load missions");
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(fetchMissions);
+
+function openCreate() {
+  editingMission.value = undefined;
+  showModal.value = true;
+}
+
+function openEdit(mission: Mission) {
+  editingMission.value = mission;
+  showModal.value = true;
+}
+
+function onMissionSaved() {
+  fetchMissions();
+  toast.success(editingMission.value ? "Mission updated" : "Mission created");
+}
+
+async function deleteMission(mission: Mission) {
+  try {
+    await $fetch(`${config.public.apiUrl}/missions/${mission.id}`, {
+      method: "DELETE",
+    });
+    toast.success("Mission deleted");
+    await fetchMissions();
+    await navigateTo("/");
+  } catch (err: any) {
+    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to delete mission");
+  }
+}
 
 function toggle() {
   isOpen.value = !isOpen.value;
@@ -66,7 +107,7 @@ function toggle() {
 
         <IconButton
           :class="isOpen ? 'ml-auto' : 'mx-auto'"
-          @click="showModal = true"
+          @click="openCreate"
         >
           <Icon
             class="text-violet-300/70 text-md group-hover:text-violet-100 transition-colors ease-in-out duration-200"
@@ -78,9 +119,20 @@ function toggle() {
       <ul
         class="flex flex-col gap-4 flex-1 min-h-0 [scrollbar-gutter:stable] overflow-y-auto pt-2 pb-16 pr-3 pl-2 mr-4 ml-2 scrollbar-thin mission-list"
       >
-        <li v-for="mission in missions" :key="mission.id">
-          <MissionLink :mission="mission" />
-        </li>
+        <template v-if="loading">
+          <li v-for="i in 4" :key="i">
+            <MissionLinkSkeleton />
+          </li>
+        </template>
+        <template v-else>
+          <li v-for="mission in missions" :key="mission.id">
+            <MissionLink
+              :mission="mission"
+              @edit="openEdit(mission)"
+              @delete="deleteMission(mission)"
+            />
+          </li>
+        </template>
       </ul>
     </div>
 
@@ -90,5 +142,10 @@ function toggle() {
     </div>
   </motion.aside>
 
-  <MissionModal :show="showModal" @close="showModal = false" />
+  <MissionModal
+    :show="showModal"
+    :mission="editingMission"
+    @close="showModal = false"
+    @saved="onMissionSaved"
+  />
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Sidebar from "~/components/ui/sidebar.vue";
 import SpaceParticles from "~/components/ui/space-particles.vue";
+import ToastContainer from "~/components/ui/toast-container.vue";
 </script>
 
 <template>
@@ -10,5 +11,7 @@ import SpaceParticles from "~/components/ui/space-particles.vue";
     <Sidebar />
 
     <NuxtPage />
+
+    <ToastContainer />
   </main>
 </template>

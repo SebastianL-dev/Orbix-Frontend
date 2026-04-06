@@ -2,10 +2,18 @@
 import { ref } from "vue";
 import type Task from "~/interfaces/task.interface";
 import { AnimatePresence, motion } from "motion-v";
+import IconButton from "~/components/buttons/icon-button.vue";
 
 const props = defineProps<{
   task: Task;
   depth?: number;
+}>();
+
+const emit = defineEmits<{
+  edit: [task: Task];
+  delete: [task: Task];
+  addChild: [parentId: number, depth: number];
+  saved: [];
 }>();
 
 const depth = props.depth ?? 0;
@@ -38,7 +46,7 @@ const statusLabel = computed(() => {
 const childrenLabel = computed(() => {
   const count = props.task.children.length;
   const hasGrandchildren = props.task.children.some(
-    (child) => child.children.length > 0
+    (child) => child.children.length > 0,
   );
   const word = hasGrandchildren ? "subphase" : "task";
   return `${count} ${word}${count > 1 ? "s" : ""}`;
@@ -94,6 +102,42 @@ const childrenLabel = computed(() => {
           </span>
         </div>
       </div>
+
+      <div
+        class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+        @click.stop
+      >
+        <IconButton
+          v-if="depth < 2"
+          title="Add subtask"
+          @click="emit('addChild', task.id, depth)"
+        >
+          <Icon
+            name="lucide:plus"
+            class="text-violet-300/70 text-md group-hover:text-violet-100 transition-colors ease-in-out duration-200"
+          />
+        </IconButton>
+        <button
+          class="flex group items-center justify-center shrink-0 size-6 rounded-md hover:bg-violet-500/15 transition-all transition-mix duration-500 cursor-pointer hover:scale-125"
+          title="Edit task"
+          @click="emit('edit', task)"
+        >
+          <Icon
+            name="lucide:pencil"
+            class="text-xs text-violet-300/70 group-hover:text-violet-100 transition-colors ease-in-out duration-200"
+          />
+        </button>
+        <button
+          class="flex group-icon items-center justify-center shrink-0 size-6 rounded-md hover:bg-red-500/15 transition-all transition-mix duration-500 cursor-pointer hover:scale-125"
+          title="Delete task"
+          @click="emit('delete', task)"
+        >
+          <Icon
+            name="lucide:trash-2"
+            class="text-xs text-red-400 group-icon-hover:text-red-300 transition-colors ease-in-out duration-200"
+          />
+        </button>
+      </div>
     </div>
 
     <AnimatePresence>
@@ -110,6 +154,10 @@ const childrenLabel = computed(() => {
           :key="child.id"
           :task="child"
           :depth="depth + 1"
+          @edit="emit('edit', $event)"
+          @delete="emit('delete', $event)"
+          @add-child="(parentId, d) => emit('addChild', parentId, d)"
+          @saved="emit('saved')"
         />
       </motion.div>
     </AnimatePresence>
