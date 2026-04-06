@@ -16,6 +16,7 @@ const tree = ref<Tree | null>(null);
 const loading = ref(true);
 const mission = computed(() => tree.value?.mission);
 const tasks = computed(() => tree.value?.tree ?? []);
+const mostExpensiveId = ref<number | null>(null);
 
 const showTaskModal = ref(false);
 const editingTask = ref<Task | undefined>();
@@ -40,7 +41,21 @@ async function fetchTree() {
   }
 }
 
-onMounted(fetchTree);
+async function fetchMostExpensive() {
+  try {
+    const data = await $fetch<any>(
+      `${config.public.apiUrl}/missions/${missionId.value}/calc/most-expensive`,
+    );
+    mostExpensiveId.value = data?.id ?? null;
+  } catch {
+    mostExpensiveId.value = null;
+  }
+}
+
+onMounted(() => {
+  fetchTree();
+  fetchMostExpensive();
+});
 
 function openAddRoot() {
   editingTask.value = undefined;
@@ -64,6 +79,7 @@ function openEdit(task: Task) {
 
 function onTaskSaved() {
   fetchTree();
+  fetchMostExpensive();
   toast.success(editingTask.value ? t("toast.task.updated") : t("toast.task.created"));
 }
 
@@ -74,6 +90,7 @@ async function deleteTask(task: Task) {
     });
     toast.success(t("toast.task.deleted"));
     await fetchTree();
+    await fetchMostExpensive();
   } catch (err: any) {
     toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.task.delete"));
   }
@@ -113,6 +130,7 @@ async function deleteTask(task: Task) {
 
       <MissionTree
         :tasks="tasks"
+        :most-expensive-id="mostExpensiveId"
         @add-root="openAddRoot"
         @add-child="openAddChild"
         @edit="openEdit"

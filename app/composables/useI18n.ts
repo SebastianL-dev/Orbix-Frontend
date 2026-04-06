@@ -2,7 +2,8 @@ const translations: Record<string, Record<string, string>> = {
   en: {
     // Home
     "home.title": "Orbix Space Missions",
-    "home.description": "Check all space missions in Orbix, create and update missions.",
+    "home.description":
+      "Check all space missions in Orbix, create and update missions.",
 
     // Sidebar
     "sidebar.missions": "MISSIONS",
@@ -55,6 +56,9 @@ const translations: Record<string, Record<string, string>> = {
     "tree.task": "task",
     "tree.tasks": "tasks",
 
+    // Badges
+    "badge.mostExpensive": "Most Expensive",
+
     // Buttons
     "btn.cancel": "Cancel",
     "btn.close": "Close",
@@ -83,7 +87,8 @@ const translations: Record<string, Record<string, string>> = {
   es: {
     // Home
     "home.title": "Orbix Misiones Espaciales",
-    "home.description": "Revisa todas las misiones espaciales en Orbix, crea y actualiza misiones.",
+    "home.description":
+      "Revisa todas las misiones espaciales en Orbix, crea y actualiza misiones.",
 
     // Sidebar
     "sidebar.missions": "MISIONES",
@@ -91,7 +96,7 @@ const translations: Record<string, Record<string, string>> = {
 
     // Navigation
     "nav.hierarchy": "Jerarquia",
-    "nav.tree": "Arbol",
+    "nav.tree": "Árbol",
 
     // Mission modal
     "mission.new": "Nueva Mision",
@@ -120,7 +125,7 @@ const translations: Record<string, Record<string, string>> = {
     "status.completed": "Completado",
 
     // Tree
-    "tree.title": "Arbol de Tareas",
+    "tree.title": "Árbol de Tareas",
     "tree.empty": "Sin tareas aun",
     "tree.addRoot": "Agregar tarea raiz",
     "tree.addSubtask": "Agregar subtarea",
@@ -135,6 +140,9 @@ const translations: Record<string, Record<string, string>> = {
     "tree.subphases": "subfases",
     "tree.task": "tarea",
     "tree.tasks": "tareas",
+
+    // Badges
+    "badge.mostExpensive": "Más Costoso",
 
     // Buttons
     "btn.cancel": "Cancelar",
@@ -157,7 +165,7 @@ const translations: Record<string, Record<string, string>> = {
     "toast.error.missions": "Error al cargar misiones",
     "toast.error.mission.save": "Error al guardar mision",
     "toast.error.mission.delete": "Error al eliminar mision",
-    "toast.error.tree": "Error al cargar arbol",
+    "toast.error.tree": "Error al cargar árbol",
     "toast.error.task.save": "Error al guardar tarea",
     "toast.error.task.delete": "Error al eliminar tarea",
   },

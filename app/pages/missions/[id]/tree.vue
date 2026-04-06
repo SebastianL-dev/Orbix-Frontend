@@ -14,6 +14,7 @@ const { t } = useI18n();
 const tree = ref<Tree | null>(null);
 const loading = ref(true);
 const mission = computed(() => tree.value?.mission);
+const mostExpensiveId = ref<number | null>(null);
 
 const showTaskModal = ref(false);
 const editingTask = ref<Task | undefined>();
@@ -37,7 +38,21 @@ async function fetchTree() {
   }
 }
 
-onMounted(fetchTree);
+async function fetchMostExpensive() {
+  try {
+    const data = await $fetch<any>(
+      `${config.public.apiUrl}/missions/${missionId.value}/calc/most-expensive`,
+    );
+    mostExpensiveId.value = data?.id ?? null;
+  } catch {
+    mostExpensiveId.value = null;
+  }
+}
+
+onMounted(() => {
+  fetchTree();
+  fetchMostExpensive();
+});
 
 function openAddRoot() {
   editingTask.value = undefined;
@@ -47,6 +62,7 @@ function openAddRoot() {
 
 function onTaskSaved() {
   fetchTree();
+  fetchMostExpensive();
   toast.success(t("toast.task.created"));
 }
 </script>
@@ -96,7 +112,7 @@ function onTaskSaved() {
           >
             <Icon name="lucide:plus" class="text-sm text-violet-300" />
           </button>
-          <TreeFlow :mission="tree.mission" :tasks="tree.tree" />
+          <TreeFlow :mission="tree.mission" :tasks="tree.tree" :most-expensive-id="mostExpensiveId" />
         </div>
       </ClientOnly>
     </template>

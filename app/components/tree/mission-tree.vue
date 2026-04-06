@@ -4,6 +4,7 @@ import TreeNode from "./tree-node.vue";
 
 defineProps<{
   tasks: Task[];
+  mostExpensiveId?: number | null;
 }>();
 
 const emit = defineEmits<{
@@ -54,6 +55,7 @@ const { t } = useI18n();
       v-for="task in tasks"
       :key="task.id"
       :task="task"
+      :most-expensive-id="mostExpensiveId"
       @edit="emit('edit', $event)"
       @delete="emit('delete', $event)"
       @add-child="(parentId, d) => emit('addChild', parentId, d)"

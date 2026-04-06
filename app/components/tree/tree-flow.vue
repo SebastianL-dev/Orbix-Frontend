@@ -7,7 +7,10 @@ import type Mission from "~/interfaces/mission.interface";
 const props = defineProps<{
   mission: Mission;
   tasks: Task[];
+  mostExpensiveId?: number | null;
 }>();
+
+const { t } = useI18n();
 
 const statusColor: Record<string, string> = {
   completed: "#16a34a",
@@ -32,6 +35,7 @@ function flattenTasks(tasks: Task[], nodes: Node[], edges: Edge[]) {
         status,
         duration: task.duration,
         cost: task.cost,
+        isMostExpensive: task.id === props.mostExpensiveId,
       },
       type: "custom",
     });
@@ -157,9 +161,17 @@ const edges = ref(rawEdges);
           borderColor: statusColor[data.status] ?? statusColor.pending,
         }"
       >
-        <p class="text-sm font-medium text-violet-50 truncate">
-          {{ data.label }}
-        </p>
+        <div class="flex items-center gap-2">
+          <p class="text-sm font-medium text-violet-50 truncate">
+            {{ data.label }}
+          </p>
+          <span
+            v-if="data.isMostExpensive"
+            class="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full shrink-0 bg-red-500/25 text-red-400"
+          >
+            {{ t("badge.mostExpensive") }}
+          </span>
+        </div>
         <div class="flex items-center gap-3 mt-1 text-xs text-violet-200/60">
           <span>{{ data.duration }}h</span>
           <span>${{ data.cost.toLocaleString() }}</span>

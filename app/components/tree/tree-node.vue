@@ -7,6 +7,7 @@ import IconButton from "~/components/buttons/icon-button.vue";
 const props = defineProps<{
   task: Task;
   depth?: number;
+  mostExpensiveId?: number | null;
 }>();
 
 const emit = defineEmits<{
@@ -39,6 +40,8 @@ const statusColor = computed(() => {
       return "bg-violet-500/15 text-violet-300";
   }
 });
+
+const isMostExpensive = computed(() => props.task.id === props.mostExpensiveId);
 
 const statusLabel = computed(() => {
   const key = `${props.task.status.toLowerCase().replaceAll("_", " ")}`;
@@ -88,6 +91,12 @@ const childrenLabel = computed(() => {
             :class="statusColor"
           >
             {{ statusLabel }}
+          </span>
+          <span
+            v-if="isMostExpensive"
+            class="text-[10px] uppercase font-semibold px-2 py-1 rounded-full shrink-0 bg-red-500/25 text-red-400"
+          >
+            {{ t("badge.mostExpensive") }}
           </span>
         </div>
 
@@ -158,6 +167,7 @@ const childrenLabel = computed(() => {
           :key="child.id"
           :task="child"
           :depth="depth + 1"
+          :most-expensive-id="mostExpensiveId"
           @edit="emit('edit', $event)"
           @delete="emit('delete', $event)"
           @add-child="(parentId, d) => emit('addChild', parentId, d)"
