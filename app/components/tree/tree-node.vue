@@ -41,7 +41,7 @@ const statusColor = computed(() => {
 });
 
 const statusLabel = computed(() => {
-  const key = `status.${props.task.status.toLowerCase()}`;
+  const key = `${props.task.status.toLowerCase().replaceAll("_", " ")}`;
   return t(key);
 });
 
