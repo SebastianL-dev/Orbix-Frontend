@@ -10,11 +10,12 @@ const route = useRoute();
 
 const config = useRuntimeConfig();
 
-const { data: tree } = await useFetch<Tree>(
-  `${config.public.apiUrl}/missions/${props.mission.id}/tree`,
-);
+const tree = ref<Tree | null>(null);
+const phases = computed(() => tree.value?.tree.length || 0);
 
-const phases = tree.value?.tree.length || 0;
+onMounted(async () => {
+  tree.value = await $fetch<Tree>(`${config.public.apiUrl}/missions/${props.mission.id}/tree`);
+});
 
 const style = computed(() => {
   return route.path.startsWith(`/missions/${props.mission.id}`)

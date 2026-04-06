@@ -6,12 +6,14 @@ import type Tree from "~/interfaces/tree.interface";
 const config = useRuntimeConfig();
 const route = useRoute();
 
-const { data: tree } = await useFetch<Tree>(
-  `${config.public.apiUrl}/missions/${route.path.replace("/missions/", "")}/tree`,
-);
-
-const mission = tree.value?.mission;
+const tree = ref<Tree | null>(null);
+const mission = computed(() => tree.value?.mission);
 const tasks = computed(() => tree.value?.tree ?? []);
+
+onMounted(async () => {
+  const id = route.path.replace("/missions/", "");
+  tree.value = await $fetch<Tree>(`${config.public.apiUrl}/missions/${id}/tree`);
+});
 </script>
 
 <template>

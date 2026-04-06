@@ -10,12 +10,13 @@ import MissionLink from "../links/mission-link.vue";
 
 const config = useRuntimeConfig();
 
-const { data: missions } = await useFetch<Mission[]>(
-  `${config.public.apiUrl}/missions`,
-);
-
+const missions = ref<Mission[]>([]);
 const isOpen = ref(true);
 const showModal = ref(false);
+
+onMounted(async () => {
+  missions.value = await $fetch<Mission[]>(`${config.public.apiUrl}/missions`);
+});
 
 function toggle() {
   isOpen.value = !isOpen.value;
