@@ -55,12 +55,14 @@ function flattenTasks(tasks: Task[], nodes: Node[], edges: Edge[]) {
 function layoutGraph(nodes: Node[], edges: Edge[]) {
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: "TB", nodesep: 40, ranksep: 80 });
+  g.setGraph({ rankdir: "TB", nodesep: 60, ranksep: 100 });
 
   for (const node of nodes) {
     const isMission = node.type === "mission";
+    const labelLen = (node.data.label?.length ?? 10) * 8;
+    const width = isMission ? Math.max(280, labelLen + 60) : Math.max(240, labelLen + 50);
     g.setNode(node.id, {
-      width: isMission ? 260 : 220,
+      width,
       height: isMission ? 80 : 70,
     });
   }
@@ -71,8 +73,8 @@ function layoutGraph(nodes: Node[], edges: Edge[]) {
   dagre.layout(g);
 
   for (const node of nodes) {
-    const pos = g.node(node.id);
-    node.position = { x: pos.x - 110, y: pos.y - 35 };
+    const dagNode = g.node(node.id);
+    node.position = { x: dagNode.x - dagNode.width / 2, y: dagNode.y - dagNode.height / 2 };
   }
 }
 

@@ -11,6 +11,7 @@ import MissionLink from "../links/mission-link.vue";
 
 const config = useRuntimeConfig();
 const toast = useToast();
+const { t } = useI18n();
 
 const missions = ref<Mission[]>([]);
 const loading = ref(true);
@@ -23,7 +24,7 @@ async function fetchMissions() {
   try {
     missions.value = await $fetch<Mission[]>(`${config.public.apiUrl}/missions`);
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to load missions");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.missions"));
   } finally {
     loading.value = false;
   }
@@ -43,7 +44,7 @@ function openEdit(mission: Mission) {
 
 function onMissionSaved() {
   fetchMissions();
-  toast.success(editingMission.value ? "Mission updated" : "Mission created");
+  toast.success(editingMission.value ? t("toast.mission.updated") : t("toast.mission.created"));
 }
 
 async function deleteMission(mission: Mission) {
@@ -51,11 +52,11 @@ async function deleteMission(mission: Mission) {
     await $fetch(`${config.public.apiUrl}/missions/${mission.id}`, {
       method: "DELETE",
     });
-    toast.success("Mission deleted");
+    toast.success(t("toast.mission.deleted"));
     await fetchMissions();
     await navigateTo("/");
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to delete mission");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.mission.delete"));
   }
 }
 
@@ -101,7 +102,7 @@ function toggle() {
             :transition="{ duration: 0.3, ease: 'easeInOut' }"
             class="font-semibold text-xs text-violet-200/50 whitespace-nowrap"
           >
-            MISSIONS
+            {{ t("sidebar.missions") }}
           </motion.span>
         </AnimatePresence>
 
@@ -116,24 +117,31 @@ function toggle() {
         </IconButton>
       </div>
 
-      <ul
-        class="flex flex-col gap-4 flex-1 min-h-0 [scrollbar-gutter:stable] overflow-y-auto pt-2 pb-16 pr-3 pl-2 mr-4 ml-2 scrollbar-thin mission-list"
-      >
-        <template v-if="loading">
-          <li v-for="i in 4" :key="i">
-            <MissionLinkSkeleton />
-          </li>
-        </template>
-        <template v-else>
-          <li v-for="mission in missions" :key="mission.id">
-            <MissionLink
-              :mission="mission"
-              @edit="openEdit(mission)"
-              @delete="deleteMission(mission)"
-            />
-          </li>
-        </template>
-      </ul>
+      <AnimatePresence>
+        <motion.ul
+          v-if="isOpen"
+          :initial="{ opacity: 0 }"
+          :animate="{ opacity: 1 }"
+          :exit="{ opacity: 0 }"
+          :transition="{ duration: 0.2 }"
+          class="flex flex-col gap-4 flex-1 min-h-0 [scrollbar-gutter:stable] overflow-y-auto pt-2 pb-16 pr-3 pl-2 mr-4 ml-2 scrollbar-thin mission-list"
+        >
+          <template v-if="loading">
+            <li v-for="i in 4" :key="i">
+              <MissionLinkSkeleton />
+            </li>
+          </template>
+          <template v-else>
+            <li v-for="mission in missions" :key="mission.id">
+              <MissionLink
+                :mission="mission"
+                @edit="openEdit(mission)"
+                @delete="deleteMission(mission)"
+              />
+            </li>
+          </template>
+        </motion.ul>
+      </AnimatePresence>
     </div>
 
     <div class="flex flex-col gap-2 px-4">

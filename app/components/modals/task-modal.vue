@@ -5,12 +5,6 @@ import MainButton from "~/components/buttons/main-button.vue";
 import CustomSelect from "~/components/ui/custom-select.vue";
 import type Task from "~/interfaces/task.interface";
 
-const statusOptions = [
-  { value: "PENDING", label: "Pending", color: "#a1a1aa" },
-  { value: "IN_PROGRESS", label: "In Progress", color: "#fcd34d" },
-  { value: "COMPLETED", label: "Completed", color: "#22c55e" },
-];
-
 const props = defineProps<{
   show: boolean;
   missionId: number;
@@ -23,6 +17,13 @@ const emit = defineEmits<{ close: []; saved: [] }>();
 
 const config = useRuntimeConfig();
 const toast = useToast();
+const { t } = useI18n();
+
+const statusOptions = computed(() => [
+  { value: "PENDING", label: t("status.pending"), color: "#a1a1aa" },
+  { value: "IN_PROGRESS", label: t("status.in_progress"), color: "#fcd34d" },
+  { value: "COMPLETED", label: t("status.completed"), color: "#22c55e" },
+]);
 
 const name = ref("");
 const duration = ref(0);
@@ -83,7 +84,7 @@ async function submit() {
     emit("saved");
     emit("close");
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to save task");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.task.save"));
   } finally {
     loading.value = false;
   }
@@ -116,14 +117,10 @@ async function submit() {
           <div class="flex items-center justify-between">
             <div class="flex flex-col gap-0.5">
               <h2 class="text-2xl font-bold text-violet-100">
-                {{ isEdit ? "Edit Task" : "New Task" }}
+                {{ isEdit ? t("task.edit") : t("task.new") }}
               </h2>
               <span class="text-sm font-normal text-violet-200/60">
-                {{
-                  isEdit
-                    ? "Update this task's details."
-                    : "Add a new task to the mission."
-                }}
+                {{ isEdit ? t("task.edit.description") : t("task.new.description") }}
               </span>
             </div>
 
@@ -141,13 +138,12 @@ async function submit() {
                 <label
                   class="text-xs font-semibold text-violet-100/50 w-fit"
                   for="task_name"
-                  >NAME</label
-                >
+                >{{ t("task.name") }}</label>
                 <input
                   id="task_name"
                   v-model="name"
                   type="text"
-                  placeholder="Pre-flight review..."
+                  :placeholder="t('task.name.placeholder')"
                   required
                   class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors"
                 />
@@ -158,8 +154,7 @@ async function submit() {
                   <label
                     class="text-xs font-semibold text-violet-100/50 w-fit"
                     for="task_duration"
-                    >DURATION (hours)</label
-                  >
+                  >{{ t("task.duration") }}</label>
                   <input
                     id="task_duration"
                     v-model.number="duration"
@@ -173,8 +168,7 @@ async function submit() {
                   <label
                     class="text-xs font-semibold text-violet-100/50 w-fit"
                     for="task_cost"
-                    >COST</label
-                  >
+                  >{{ t("task.cost") }}</label>
                   <input
                     id="task_cost"
                     v-model.number="cost"
@@ -187,7 +181,7 @@ async function submit() {
 
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold text-violet-100/50 w-fit">
-                  STATUS
+                  {{ t("task.status") }}
                 </label>
                 <CustomSelect
                   v-model="status"
@@ -201,11 +195,10 @@ async function submit() {
                 @click="$emit('close')"
                 type="button"
                 variant="secondary"
-                >Cancel</MainButton
-              >
+              >{{ t("btn.cancel") }}</MainButton>
 
               <MainButton type="submit" :disabled="loading">
-                {{ isEdit ? "Save Changes" : "Create Task" }}
+                {{ isEdit ? t("btn.save") : t("btn.create.task") }}
               </MainButton>
             </div>
           </form>

@@ -16,6 +16,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
+const { t } = useI18n();
 const depth = props.depth ?? 0;
 const isOpen = ref(depth < 1);
 const hasChildren = computed(() => props.task.children.length > 0);
@@ -40,7 +41,8 @@ const statusColor = computed(() => {
 });
 
 const statusLabel = computed(() => {
-  return props.task.status.replace(/_/g, " ");
+  const key = `status.${props.task.status.toLowerCase()}`;
+  return t(key);
 });
 
 const childrenLabel = computed(() => {
@@ -48,8 +50,10 @@ const childrenLabel = computed(() => {
   const hasGrandchildren = props.task.children.some(
     (child) => child.children.length > 0,
   );
-  const word = hasGrandchildren ? "subphase" : "task";
-  return `${count} ${word}${count > 1 ? "s" : ""}`;
+  const word = hasGrandchildren
+    ? t(count > 1 ? "tree.subphases" : "tree.subphase")
+    : t(count > 1 ? "tree.tasks" : "tree.task");
+  return `${count} ${word}`;
 });
 </script>
 
@@ -109,7 +113,7 @@ const childrenLabel = computed(() => {
       >
         <IconButton
           v-if="depth < 2"
-          title="Add subtask"
+          :title="t('tree.addSubtask')"
           @click="emit('addChild', task.id, depth)"
         >
           <Icon
@@ -119,7 +123,7 @@ const childrenLabel = computed(() => {
         </IconButton>
         <button
           class="flex group items-center justify-center shrink-0 size-6 rounded-md hover:bg-violet-500/15 transition-all transition-mix duration-500 cursor-pointer hover:scale-125"
-          title="Edit task"
+          :title="t('tree.editTask')"
           @click="emit('edit', task)"
         >
           <Icon
@@ -129,7 +133,7 @@ const childrenLabel = computed(() => {
         </button>
         <button
           class="flex group-icon items-center justify-center shrink-0 size-6 rounded-md hover:bg-red-500/15 transition-all transition-mix duration-500 cursor-pointer hover:scale-125"
-          title="Delete task"
+          :title="t('tree.deleteTask')"
           @click="emit('delete', task)"
         >
           <Icon

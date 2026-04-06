@@ -10,6 +10,7 @@ import type Task from "~/interfaces/task.interface";
 const config = useRuntimeConfig();
 const route = useRoute();
 const toast = useToast();
+const { t } = useI18n();
 
 const tree = ref<Tree | null>(null);
 const loading = ref(true);
@@ -33,7 +34,7 @@ async function fetchTree() {
       `${config.public.apiUrl}/missions/${missionId.value}/tree`,
     );
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to load tree");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.tree"));
   } finally {
     loading.value = false;
   }
@@ -63,7 +64,7 @@ function openEdit(task: Task) {
 
 function onTaskSaved() {
   fetchTree();
-  toast.success(editingTask.value ? "Task updated" : "Task created");
+  toast.success(editingTask.value ? t("toast.task.updated") : t("toast.task.created"));
 }
 
 async function deleteTask(task: Task) {
@@ -71,10 +72,10 @@ async function deleteTask(task: Task) {
     await $fetch(`${config.public.apiUrl}/tasks/${task.id}`, {
       method: "DELETE",
     });
-    toast.success("Task deleted");
+    toast.success(t("toast.task.deleted"));
     await fetchTree();
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to delete task");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.task.delete"));
   }
 }
 </script>
@@ -99,14 +100,12 @@ async function deleteTask(task: Task) {
             class="rounded-xl p-2 hover:scale-105 transition-mix"
             :class="$route.path.endsWith('tree') ? '' : 'bg-violet-500/70'"
             :to="`/missions/${mission?.id}`"
-            >Hierarchy</NuxtLink
-          >
+          >{{ t("nav.hierarchy") }}</NuxtLink>
           <NuxtLink
             class="rounded-xl p-2 hover:scale-105 transition-mix"
             :class="$route.path.endsWith('tree') ? 'bg-violet-500/70' : ''"
             :to="`/missions/${mission?.id}/tree`"
-            >Tree</NuxtLink
-          >
+          >{{ t("nav.tree") }}</NuxtLink>
         </div>
       </header>
 

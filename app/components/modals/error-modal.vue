@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion-v";
 
 defineProps<{ show: boolean; statusCode?: number; message: string }>();
 const emit = defineEmits<{ close: [] }>();
+const { t } = useI18n();
 </script>
 
 <template>
@@ -38,12 +39,12 @@ const emit = defineEmits<{ close: [] }>();
           </div>
 
           <div class="flex flex-col gap-1">
-            <h2 class="text-xl font-bold text-red-100">Error</h2>
+            <h2 class="text-xl font-bold text-red-100">{{ t("error.title") }}</h2>
             <span
               v-if="statusCode"
               class="text-xs font-semibold text-red-400/70"
             >
-              Status {{ statusCode }}
+              {{ t("error.status") }} {{ statusCode }}
             </span>
             <p class="text-sm text-red-200/70">{{ message }}</p>
           </div>
@@ -52,7 +53,7 @@ const emit = defineEmits<{ close: [] }>();
             class="px-4 py-3 rounded-xl hover:scale-110 text-sm cursor-pointer transition-mix font-semibold bg-red-500/60 text-red-100 hover:bg-red-500 hover:text-white"
             @click="emit('close')"
           >
-            Close
+            {{ t("btn.close") }}
           </button>
         </motion.article>
       </div>

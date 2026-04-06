@@ -9,6 +9,7 @@ import type Task from "~/interfaces/task.interface";
 const config = useRuntimeConfig();
 const route = useRoute();
 const toast = useToast();
+const { t } = useI18n();
 
 const tree = ref<Tree | null>(null);
 const loading = ref(true);
@@ -30,7 +31,7 @@ async function fetchTree() {
       `${config.public.apiUrl}/missions/${missionId.value}/tree`,
     );
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to load tree");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.tree"));
   } finally {
     loading.value = false;
   }
@@ -46,7 +47,7 @@ function openAddRoot() {
 
 function onTaskSaved() {
   fetchTree();
-  toast.success("Task created");
+  toast.success(t("toast.task.created"));
 }
 </script>
 
@@ -72,14 +73,12 @@ function onTaskSaved() {
             class="rounded-xl p-2 hover:scale-105 transition-mix"
             :class="$route.path.endsWith('tree') ? '' : 'bg-violet-500/70'"
             :to="`/missions/${mission?.id}`"
-            >Hierarchy</NuxtLink
-          >
+          >{{ t("nav.hierarchy") }}</NuxtLink>
           <NuxtLink
             class="rounded-xl p-2 hover:scale-105 transition-mix"
             :class="$route.path.endsWith('tree') ? 'bg-violet-500/70' : ''"
             :to="`/missions/${mission?.id}/tree`"
-            >Tree</NuxtLink
-          >
+          >{{ t("nav.tree") }}</NuxtLink>
         </div>
       </header>
 
@@ -92,7 +91,7 @@ function onTaskSaved() {
         >
           <button
             class="absolute top-3 right-3 z-10 p-2 rounded-lg bg-violet-500/20 hover:bg-violet-500/40 cursor-pointer transition-colors"
-            title="Add root task"
+            :title="t('tree.addRoot')"
             @click="openAddRoot"
           >
             <Icon name="lucide:plus" class="text-sm text-violet-300" />

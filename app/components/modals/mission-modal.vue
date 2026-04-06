@@ -9,6 +9,7 @@ const emit = defineEmits<{ close: []; saved: [] }>();
 
 const config = useRuntimeConfig();
 const toast = useToast();
+const { t } = useI18n();
 
 const name = ref("");
 const description = ref("");
@@ -48,7 +49,7 @@ async function submit() {
     emit("saved");
     emit("close");
   } catch (err: any) {
-    toast.error(err?.data?.error || err?.data?.message || err?.message || "Failed to save mission");
+    toast.error(err?.data?.error || err?.data?.message || err?.message || t("toast.error.mission.save"));
   } finally {
     loading.value = false;
   }
@@ -81,14 +82,10 @@ async function submit() {
           <div class="flex items-center justify-between">
             <div class="flex flex-col gap-0.5">
               <h2 class="text-2xl font-bold text-violet-100">
-                {{ isEdit ? "Edit Mission" : "New Mission" }}
+                {{ isEdit ? t("mission.edit") : t("mission.new") }}
               </h2>
               <span class="text-sm font-normal text-violet-200/60">
-                {{
-                  isEdit
-                    ? "Update your mission details."
-                    : "Create a new mission in Orbix space app."
-                }}
+                {{ isEdit ? t("mission.edit.description") : t("mission.new.description") }}
               </span>
             </div>
 
@@ -106,13 +103,12 @@ async function submit() {
                 <label
                   class="text-xs font-semibold text-violet-100/50 w-fit"
                   for="mission_name"
-                  >MISSION NAME</label
-                >
+                >{{ t("mission.name") }}</label>
                 <input
                   id="mission_name"
                   v-model="name"
                   type="text"
-                  placeholder="Artemis III..."
+                  :placeholder="t('mission.name.placeholder')"
                   required
                   class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors"
                 />
@@ -122,12 +118,11 @@ async function submit() {
                 <label
                   class="text-xs font-semibold text-violet-100/50 w-fit"
                   for="mission_description"
-                  >DESCRIPTION</label
-                >
+                >{{ t("mission.description") }}</label>
                 <textarea
                   id="mission_description"
                   v-model="description"
-                  placeholder="Describe your mission..."
+                  :placeholder="t('mission.description.placeholder')"
                   rows="4"
                   class="w-full rounded-lg border border-violet-200/10 bg-violet-400/5 px-3 py-2 text-sm text-violet-100 placeholder-violet-200/25 outline-none focus:border-violet-400/40 transition-colors resize-none scrollbar"
                 />
@@ -139,11 +134,10 @@ async function submit() {
                 @click="$emit('close')"
                 type="button"
                 variant="secondary"
-                >Cancel</MainButton
-              >
+              >{{ t("btn.cancel") }}</MainButton>
 
               <MainButton type="submit" :disabled="loading">
-                {{ isEdit ? "Save Changes" : "Create Mission" }}
+                {{ isEdit ? t("btn.save") : t("btn.create.mission") }}
               </MainButton>
             </div>
           </form>

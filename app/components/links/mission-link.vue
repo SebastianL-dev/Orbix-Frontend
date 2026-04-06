@@ -10,6 +10,7 @@ const emit = defineEmits<{ edit: []; delete: [] }>();
 
 const route = useRoute();
 const config = useRuntimeConfig();
+const { t } = useI18n();
 
 const tree = ref<Tree | null>(null);
 const phases = computed(() => tree.value?.tree.length || 0);
@@ -68,7 +69,7 @@ const style = computed(() =>
     <span
       class="mt-2 text-violet-300/50 text-xs text-ellipsis whitespace-nowrap overflow-hidden"
     >
-      {{ phases }} phases
+      {{ phases }} {{ t("mission.phases") }}
     </span>
   </NuxtLink>
 </template>

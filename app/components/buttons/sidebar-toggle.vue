@@ -9,6 +9,8 @@ defineProps<{
 defineEmits<{
   toggle: [];
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -34,7 +36,7 @@ defineEmits<{
         :transition="{ duration: 0.2 }"
         class="text-sm text-violet-300/70 whitespace-nowrap"
       >
-        Collapse
+        {{ t("sidebar.collapse") }}
       </motion.span>
     </AnimatePresence>
   </MainButton>
